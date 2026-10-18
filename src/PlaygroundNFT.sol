@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {ERC721Base} from "./ERC721Base.sol";
+import {Strings} from "./utils/Strings.sol";
 
 /// @title PlaygroundNFT
 /// @notice Public-sale ERC-721 collection: capped supply, fixed mint price, per-wallet limit.
@@ -13,6 +14,9 @@ contract PlaygroundNFT is ERC721Base {
     uint256 public maxPerWallet;
     bool public saleOpen;
 
+    /// @notice Prefix for token metadata, e.g. `ipfs://<cid>/`. tokenURI is `baseURI + id + ".json"`.
+    string public baseURI;
+
     /// @notice Number of tokens minted so far. Token ids run from 1 to `totalMinted`.
     uint256 public totalMinted;
     mapping(address => uint256) public mintedBy;
@@ -20,6 +24,7 @@ contract PlaygroundNFT is ERC721Base {
     event SaleStateChanged(bool open);
     event MintPriceChanged(uint256 price);
     event MaxPerWalletChanged(uint256 limit);
+    event BaseURIChanged(string baseURI);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     error NotOwner();
@@ -83,6 +88,11 @@ contract PlaygroundNFT is ERC721Base {
         emit MaxPerWalletChanged(limit);
     }
 
+    function setBaseURI(string calldata newBaseURI) external onlyOwner {
+        baseURI = newBaseURI;
+        emit BaseURIChanged(newBaseURI);
+    }
+
     function transferOwnership(address newOwner) external onlyOwner {
         if (newOwner == address(0)) revert ZeroAddress();
         emit OwnershipTransferred(owner, newOwner);
@@ -92,6 +102,12 @@ contract PlaygroundNFT is ERC721Base {
     function withdraw() external onlyOwner {
         (bool ok,) = owner.call{value: address(this).balance}("");
         if (!ok) revert WithdrawFailed();
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        if (!_exists(tokenId)) revert NonexistentToken(tokenId);
+        if (bytes(baseURI).length == 0) return "";
+        return string.concat(baseURI, Strings.toString(tokenId), ".json");
     }
 
     /// @notice Burns a token. Callable by the owner of the token or an approved address.

@@ -1,0 +1,12 @@
+{
+  "name": "base-nft-playground",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ERC-721 collection for Base with royalties, plus a metadata generator",
+  "scripts": {
+    "test:tools": "node --test \"tools/**/*.test.mjs\"",
+    "metadata": "node tools/generate-metadata.mjs"
+  },
+  "license": "MIT"
+}

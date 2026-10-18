@@ -1,0 +1,19 @@
+{
+  "name": "Base Playground",
+  "description": "Experimental collection deployed on Base.",
+  "imageBaseUri": "ipfs://REPLACE_WITH_IMAGES_CID",
+  "count": 100,
+  "seed": 2026,
+  "traits": {
+    "Background": [
+      { "value": "Blue", "weight": 5 },
+      { "value": "Green", "weight": 3 },
+      { "value": "Gold", "weight": 1 }
+    ],
+    "Shape": [
+      { "value": "Circle", "weight": 4 },
+      { "value": "Square", "weight": 4 },
+      { "value": "Triangle", "weight": 2 }
+    ]
+  }
+}
